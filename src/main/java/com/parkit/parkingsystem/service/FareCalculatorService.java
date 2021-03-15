@@ -4,7 +4,6 @@ import com.parkit.parkingsystem.constants.Fare;
 import com.parkit.parkingsystem.model.Ticket;
 
 import java.time.Instant;
-import java.util.concurrent.TimeUnit;
 
 import static java.time.temporal.ChronoUnit.SECONDS;
 
@@ -20,8 +19,8 @@ public class FareCalculatorService {
         Instant outHour = ticket.getOutTime().toInstant();
 
         //TODO: Some tests are failing here. Need to check if this logic is correct
-        long duration        = SECONDS.between(inHour, outHour);
-        long durationToHours = TimeUnit.SECONDS.toHours(duration);
+        double duration        = SECONDS.between(inHour, outHour);
+        double durationToHours = duration / 60 / 60;
 
 
         switch (ticket.getParkingSpot().getParkingType()) {
