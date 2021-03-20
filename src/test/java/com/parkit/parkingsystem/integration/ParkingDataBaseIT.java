@@ -23,6 +23,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Date;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.withPrecision;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -113,6 +114,25 @@ public class ParkingDataBaseIT {
                             .getOutTime()).isAfter(ticketDAO.getTicket(VEHICULE_REG_NUMBER).getInTime());
         assertThat(ticketDAO.getTicket(VEHICULE_REG_NUMBER).getPrice()).isGreaterThan(0);
 
+    }
+
+    @Test
+    public void testParkingLotExitWithDiscount() throws Exception {
+
+        testParkingLotExit();
+
+        ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
+        parkingService.processIncomingVehicle();
+
+        Ticket ticket = ticketDAO.getTicket(VEHICULE_REG_NUMBER);
+
+        Date outTime = new Date();
+        outTime.setTime(System.currentTimeMillis() + (60 * 60 * 1000));
+        ticket.setOutTime(outTime);
+
+        fareCalculatorService.calculateFare(ticket);
+
+        assertThat(ticket.getPrice()).isEqualTo(1.425, withPrecision(0.01));
     }
 
 }
