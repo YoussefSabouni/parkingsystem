@@ -8,7 +8,10 @@ import com.parkit.parkingsystem.model.Ticket;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.Timestamp;
 
 public class TicketDAO {
 
@@ -62,8 +65,8 @@ public class TicketDAO {
             logger.error("Error fetching next available slot",ex);
         }finally {
             dataBaseConfig.closeConnection(con);
+            return ticket;
         }
-        return ticket;
     }
 
     public boolean updateTicket(Ticket ticket) {
@@ -82,26 +85,5 @@ public class TicketDAO {
             dataBaseConfig.closeConnection(con);
         }
         return false;
-    }
-
-    public boolean isRecurringUser(String vehicleRegNumber) {
-        Connection con = null;
-        int ticketNumber = 0;
-
-        try {
-            con = dataBaseConfig.getConnection();
-            PreparedStatement ps = con.prepareStatement(DBConstants.GET_NUMBERS_TICKETS_BY_VEHICLE_REG_NUMBER);
-            ps.setString(1, vehicleRegNumber);
-            ResultSet resultSet = ps.executeQuery();
-            if (resultSet.next()) {
-                ticketNumber = resultSet.getInt(1);
-            }
-        } catch (SQLException | ClassNotFoundException e) {
-            logger.error("Error retrieve recurent user", e);
-        }finally {
-            dataBaseConfig.closeConnection(con);
-        }
-
-        return ticketNumber > 0;
     }
 }
