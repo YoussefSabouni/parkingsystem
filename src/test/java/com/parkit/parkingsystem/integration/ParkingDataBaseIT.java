@@ -10,10 +10,7 @@ import com.parkit.parkingsystem.model.Ticket;
 import com.parkit.parkingsystem.service.FareCalculatorService;
 import com.parkit.parkingsystem.service.ParkingService;
 import com.parkit.parkingsystem.util.InputReaderUtil;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -61,7 +58,7 @@ public class ParkingDataBaseIT {
 
     @AfterAll
     private static void tearDown(){
-
+        dataBasePrepareService.clearDataBaseEntries();
     }
 
     @BeforeEach
@@ -72,6 +69,7 @@ public class ParkingDataBaseIT {
     }
 
     @Test
+    @Tag("Vehicle entry test in DB")
     public void testParkingACar() {
 
         when(inputReaderUtil.readSelection()).thenReturn(1);
@@ -90,6 +88,7 @@ public class ParkingDataBaseIT {
     }
 
     @Test
+    @Tag("Test of the exit of a vehicle in DB")
     public void testParkingLotExit() {
 
         ParkingSpot parkingSpot = new ParkingSpot(2, ParkingType.CAR, false);
@@ -112,6 +111,7 @@ public class ParkingDataBaseIT {
     }
 
     @Test
+    @Tag("Test of the exit of a recurrent vehicle in DB")
     public void testParkingLotExitWithDiscount() {
 
         ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.CAR, false);
