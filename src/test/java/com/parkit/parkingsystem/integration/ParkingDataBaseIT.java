@@ -27,9 +27,9 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 public class ParkingDataBaseIT {
 
-    private static final String VEHICULE_REG_NUMBER = "ABCDEF";
+    private static final String VEHICLE_REG_NUMBER = "ABCDEF";
 
-    private static DataBaseTestConfig dataBaseTestConfig = new DataBaseTestConfig();
+    private static final DataBaseTestConfig dataBaseTestConfig = new DataBaseTestConfig();
 
     @Spy
     private static ParkingSpotDAO parkingSpotDAO;
@@ -64,7 +64,7 @@ public class ParkingDataBaseIT {
     @BeforeEach
     private void setUpPerTest() throws Exception {
 
-        when(inputReaderUtil.readVehicleRegistrationNumber()).thenReturn(VEHICULE_REG_NUMBER);
+        when(inputReaderUtil.readVehicleRegistrationNumber()).thenReturn(VEHICLE_REG_NUMBER);
         dataBasePrepareService.clearDataBaseEntries();
     }
 
@@ -81,9 +81,9 @@ public class ParkingDataBaseIT {
         //TODO: check that a ticket is actually saved in DB and Parking table is updated with availability
 
         verify(parkingSpotDAO, Mockito.times(1)).updateParking(parkingSpot);
-        assertThat(ticketDAO.getTicket(VEHICULE_REG_NUMBER).getVehicleRegNumber()).isEqualTo(VEHICULE_REG_NUMBER);
-        assertThat(ticketDAO.getTicket(VEHICULE_REG_NUMBER).getInTime()).isNotNull();
-        assertThat(ticketDAO.getTicket(VEHICULE_REG_NUMBER).getOutTime()).isNull();
+        assertThat(ticketDAO.getTicket(VEHICLE_REG_NUMBER).getVehicleRegNumber()).isEqualTo(VEHICLE_REG_NUMBER);
+        assertThat(ticketDAO.getTicket(VEHICLE_REG_NUMBER).getInTime()).isNotNull();
+        assertThat(ticketDAO.getTicket(VEHICLE_REG_NUMBER).getOutTime()).isNull();
         assertThat(parkingSpotDAO.getNextAvailableSlot(ParkingType.CAR)).isEqualTo(2);
     }
 
@@ -97,7 +97,7 @@ public class ParkingDataBaseIT {
         Date inTime = new Date();
         inTime.setTime(System.currentTimeMillis() - 31 * 60 * 1000);
         ticket.setInTime(inTime);
-        ticket.setVehicleRegNumber(VEHICULE_REG_NUMBER);
+        ticket.setVehicleRegNumber(VEHICLE_REG_NUMBER);
         ticketDAO.saveTicket(ticket);
         parkingSpotDAO.updateParking(parkingSpot);
 
@@ -105,9 +105,9 @@ public class ParkingDataBaseIT {
         parkingService.processExitingVehicle();
 
         //TODO: check that the fare generated and out time are populated correctly in the database
-        assertThat(ticketDAO.getTicket(VEHICULE_REG_NUMBER)
-                            .getOutTime()).isAfter(ticketDAO.getTicket(VEHICULE_REG_NUMBER).getInTime());
-        assertThat(ticketDAO.getTicket(VEHICULE_REG_NUMBER).getPrice()).isGreaterThan(0);
+        assertThat(ticketDAO.getTicket(VEHICLE_REG_NUMBER)
+                            .getOutTime()).isAfter(ticketDAO.getTicket(VEHICLE_REG_NUMBER).getInTime());
+        assertThat(ticketDAO.getTicket(VEHICLE_REG_NUMBER).getPrice()).isGreaterThan(0);
     }
 
     @Test
@@ -122,7 +122,7 @@ public class ParkingDataBaseIT {
         ticket.setInTime(inTime);
         ticket.setOutTime(new Date());
         ticket.setPrice(36);
-        ticket.setVehicleRegNumber(VEHICULE_REG_NUMBER);
+        ticket.setVehicleRegNumber(VEHICLE_REG_NUMBER);
         ticketDAO.saveTicket(ticket);
 
         parkingSpot.setId(1);
@@ -131,14 +131,14 @@ public class ParkingDataBaseIT {
         Date inTime2 = new Date();
         inTime2.setTime(System.currentTimeMillis() -  60 * 60 * 1000);
         ticket2.setInTime(inTime2);
-        ticket2.setVehicleRegNumber(VEHICULE_REG_NUMBER);
+        ticket2.setVehicleRegNumber(VEHICLE_REG_NUMBER);
         ticketDAO.saveTicket(ticket2);
         parkingSpotDAO.updateParking(parkingSpot);
 
         ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
         parkingService.processExitingVehicle();
 
-        assertThat(ticketDAO.getTicket(VEHICULE_REG_NUMBER).getPrice()).isEqualTo(1.425, withPrecision(0.01));
+        assertThat(ticketDAO.getTicket(VEHICLE_REG_NUMBER).getPrice()).isEqualTo(1.425, withPrecision(0.01));
     }
 
 }

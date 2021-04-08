@@ -97,7 +97,7 @@ public class TicketDAO {
                 ticketNumber = resultSet.getInt(1);
             }
         } catch (SQLException | ClassNotFoundException e) {
-            logger.error("Error retrieve recurent user", e);
+            logger.error("Error when checking a recurring user", e);
         }finally {
             dataBaseConfig.closeConnection(con);
         }
