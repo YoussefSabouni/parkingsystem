@@ -69,7 +69,7 @@ public class ParkingDataBaseIT {
     }
 
     @Test
-    @Tag("Vehicle entry test in DB")
+    @DisplayName("Vehicle entry test in DB")
     public void testParkingACar() {
 
         when(inputReaderUtil.readSelection()).thenReturn(1);
@@ -88,7 +88,7 @@ public class ParkingDataBaseIT {
     }
 
     @Test
-    @Tag("Test of the exit of a vehicle in DB")
+    @DisplayName("Test of the exit of a vehicle in DB")
     public void testParkingLotExit() {
 
         ParkingSpot parkingSpot = new ParkingSpot(2, ParkingType.CAR, false);
@@ -111,7 +111,7 @@ public class ParkingDataBaseIT {
     }
 
     @Test
-    @Tag("Test of the exit of a recurrent vehicle in DB")
+    @DisplayName("Test of the exit of a recurrent vehicle in DB")
     public void testParkingLotExitWithDiscount() {
 
         ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.CAR, false);
