@@ -138,7 +138,7 @@ public class ParkingDataBaseIT {
         ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
         parkingService.processExitingVehicle();
 
-        assertThat(ticketDAO.getTicket(VEHICLE_REG_NUMBER).getPrice()).isEqualTo(1.425, withPrecision(0.01));
+        assertThat(ticketDAO.getTicket(VEHICLE_REG_NUMBER).getPrice()).isEqualTo(1.5 * 0.95, withPrecision(0.01));
     }
 
 }
