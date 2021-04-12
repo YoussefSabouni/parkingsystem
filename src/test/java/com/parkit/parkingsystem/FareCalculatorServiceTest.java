@@ -11,6 +11,8 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Date;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.withPrecision;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -138,6 +140,23 @@ public class FareCalculatorServiceTest {
         ticket.setParkingSpot(parkingSpot);
         fareCalculatorService.calculateFare(ticket);
         assertEquals((0 * Fare.CAR_RATE_PER_HOUR), ticket.getPrice());
+    }
+
+    @Test
+    public void calculateFare_shouldReturnPriceWithDiscount_for1hourAndUserIsRecurring() {
+
+        ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.CAR, false);
+        Date inTime = new Date();
+        inTime.setTime(System.currentTimeMillis() - (60 * 60 * 1000));
+        Date outTime = new Date();
+
+        ticket.setParkingSpot(parkingSpot);
+        ticket.setInTime(inTime);
+        ticket.setOutTime(outTime);
+
+        fareCalculatorService.calculateFare(ticket);
+
+        assertThat(ticket.getPrice()).isEqualTo(Fare.CAR_RATE_PER_HOUR * 0.95);
     }
 
 }
