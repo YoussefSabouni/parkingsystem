@@ -2,12 +2,17 @@ package com.parkit.parkingsystem;
 
 import com.parkit.parkingsystem.constants.Fare;
 import com.parkit.parkingsystem.constants.ParkingType;
+import com.parkit.parkingsystem.dao.TicketDAO;
 import com.parkit.parkingsystem.model.ParkingSpot;
 import com.parkit.parkingsystem.model.Ticket;
 import com.parkit.parkingsystem.service.FareCalculatorService;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Date;
 
@@ -15,10 +20,17 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.withPrecision;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 
+@ExtendWith(MockitoExtension.class)
 public class FareCalculatorServiceTest {
 
     private static FareCalculatorService fareCalculatorService;
+
+    @Mock
+    private TicketDAO ticketDAO;
+
     private Ticket ticket;
 
     @BeforeAll
@@ -143,12 +155,16 @@ public class FareCalculatorServiceTest {
     }
 
     @Test
-    public void calculateFare_shouldReturnPriceWithDiscount_for1hourAndUserIsRecurring() {
+    public void calculateFare_shouldReturnPriceWithDiscount_for1hourWithDiscount() {
 
+        ticket.setVehicleRegNumber("ABCDEF");
         ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.CAR, false);
+        ticket.setVehicleRegNumber("ABCDEF");
         Date inTime = new Date();
         inTime.setTime(System.currentTimeMillis() - (60 * 60 * 1000));
         Date outTime = new Date();
+
+        when(ticketDAO.isRecurringUser(ticket.getVehicleRegNumber())).thenReturn(true);
 
         ticket.setParkingSpot(parkingSpot);
         ticket.setInTime(inTime);

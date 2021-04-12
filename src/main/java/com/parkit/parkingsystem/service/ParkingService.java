@@ -106,10 +106,6 @@ public class ParkingService {
             Date outTime = new Date();
             ticket.setOutTime(outTime);
             fareCalculatorService.calculateFare(ticket);
-            if (ticketDAO.isRecurringUser(ticket.getVehicleRegNumber())) {
-                ticket.setPrice(ticket.getPrice() * 0.95);
-                System.out.println("You have received a 5% promotion for your loyalty");
-            }
             if(ticketDAO.updateTicket(ticket)) {
                 ParkingSpot parkingSpot = ticket.getParkingSpot();
                 parkingSpot.setAvailable(true);
