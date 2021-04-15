@@ -58,6 +58,7 @@ public class ParkingDataBaseIT {
 
     @AfterAll
     private static void tearDown(){
+
         dataBasePrepareService.clearDataBaseEntries();
     }
 
@@ -108,37 +109,6 @@ public class ParkingDataBaseIT {
         assertThat(ticketDAO.getTicket(VEHICLE_REG_NUMBER)
                             .getOutTime()).isAfter(ticketDAO.getTicket(VEHICLE_REG_NUMBER).getInTime());
         assertThat(ticketDAO.getTicket(VEHICLE_REG_NUMBER).getPrice()).isGreaterThan(0);
-    }
-
-    @Test
-    @DisplayName("Test of the exit of a recurrent vehicle in DB")
-    public void testParkingLotExitWithDiscount() {
-
-        ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.CAR, false);
-        Ticket ticket = new Ticket();
-        ticket.setParkingSpot(parkingSpot);
-        Date inTime = new Date();
-        inTime.setTime(System.currentTimeMillis() - 24 * 60 * 60 * 1000);
-        ticket.setInTime(inTime);
-        ticket.setOutTime(new Date());
-        ticket.setPrice(36);
-        ticket.setVehicleRegNumber(VEHICLE_REG_NUMBER);
-        ticketDAO.saveTicket(ticket);
-
-        parkingSpot.setId(1);
-        Ticket ticket2 = new Ticket();
-        ticket2.setParkingSpot(parkingSpot);
-        Date inTime2 = new Date();
-        inTime2.setTime(System.currentTimeMillis() -  60 * 60 * 1000);
-        ticket2.setInTime(inTime2);
-        ticket2.setVehicleRegNumber(VEHICLE_REG_NUMBER);
-        ticketDAO.saveTicket(ticket2);
-        parkingSpotDAO.updateParking(parkingSpot);
-
-        ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
-        parkingService.processExitingVehicle();
-
-        assertThat(ticketDAO.getTicket(VEHICLE_REG_NUMBER).getPrice()).isEqualTo(1.5 * 0.95, withPrecision(0.01));
     }
 
 }
