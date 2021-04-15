@@ -1,6 +1,7 @@
 package com.parkit.parkingsystem.service;
 
 import com.parkit.parkingsystem.constants.Fare;
+import com.parkit.parkingsystem.dao.TicketDAO;
 import com.parkit.parkingsystem.model.Ticket;
 
 import java.time.Instant;
@@ -8,6 +9,18 @@ import java.time.Instant;
 import static java.time.temporal.ChronoUnit.SECONDS;
 
 public class FareCalculatorService {
+
+    private TicketDAO ticketDAO;
+
+    public FareCalculatorService() {
+
+        this.ticketDAO = new TicketDAO();
+    }
+
+    public FareCalculatorService(TicketDAO TicketDAO) {
+
+        this.ticketDAO = TicketDAO;
+    }
 
     public void calculateFare(Ticket ticket) {
 
@@ -24,9 +37,9 @@ public class FareCalculatorService {
         double duration        = SECONDS.between(inHour, outHour);
         double durationToHours = duration / 60 / 60;
 
-
         if (durationToHours <= 0.5) {
-            rate = 0;
+            ticket.setPrice(0);
+            return;
         } else {
             switch (ticket.getParkingSpot().getParkingType()) {
                 case CAR: {
@@ -41,6 +54,12 @@ public class FareCalculatorService {
                     throw new IllegalArgumentException("Unknown Parking Type");
             }
         }
-        ticket.setPrice(durationToHours * rate);
+
+        if (ticketDAO.isRecurringUser(ticket.getVehicleRegNumber())) {
+            ticket.setPrice((durationToHours * rate) * 0.95);
+            System.out.println("You have received a 5% promotion for your loyalty");
+        } else {
+            ticket.setPrice(durationToHours * rate);
+        }
     }
 }
