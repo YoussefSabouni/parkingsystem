@@ -88,11 +88,11 @@ public class ParkingServiceTest {
     }
 
     @Test
-    public void getNextParkingNumberIfAvailable_shouldThrowException_forParkingIsFull() {
+    public void getNextParkingNumberIfAvailable_shouldReturnNull_forParkingTypeIsUnknown() {
 
         when(inputReaderUtil.readSelection()).thenReturn(3);
 
-        assertThrows(IllegalArgumentException.class, () -> parkingService.getNextParkingNumberIfAvailable());
+        assertNull(parkingService.getNextParkingNumberIfAvailable());
     }
 
 }
